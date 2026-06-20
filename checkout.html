@@ -474,23 +474,6 @@
 
             // Check if SabPaisa integration is enabled
             if (settings.sabpaisaEnabled) {
-                if (settings.sabpaisaMode === 'test') {
-                    // Redirect directly to the product's Razorpay payment link
-                    setTimeout(async () => {
-                        clearCart();
-                        let paymentLink = 'https://rzp.io/rzp/tHlmofq';
-                        if (cart.length > 0) {
-                            const products = await getProducts();
-                            const matchingProduct = products.find(p => String(p.id) === String(cart[0].id));
-                            if (matchingProduct && matchingProduct.paymentLink) {
-                                paymentLink = matchingProduct.paymentLink;
-                            }
-                        }
-                        window.location.href = paymentLink;
-                    }, 1000);
-                    return;
-                }
-
                 // Call server proxy API for SabPaisa
                 fetch('/api/create-payment', {
                     method: 'POST',

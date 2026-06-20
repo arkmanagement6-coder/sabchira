@@ -825,6 +825,10 @@ async function loadGlobalSettings() {
                     if (key === 'firebaseEnabled' && globalSettings.firebaseEnabled) {
                         continue;
                     }
+                    // Crucial fix: Do not allow local overrides to turn off SabPaisa if it is enabled globally
+                    if (key === 'sabpaisaEnabled' && globalSettings.sabpaisaEnabled) {
+                        continue;
+                    }
                     mergedSettings[key] = localVal;
                 }
             }
@@ -840,9 +844,30 @@ async function loadGlobalSettings() {
                         const doc = await db.collection('settings').doc('global').get();
                         if (doc.exists) {
                             const firestoreSettings = doc.data();
+                            
+                            // Check if settings.json has been updated with different SabPaisa credentials
+                            let needsFirestoreUpdate = false;
+                            if (globalSettings.sabpaisaClientCode && firestoreSettings.sabpaisaClientCode !== globalSettings.sabpaisaClientCode) {
+                                firestoreSettings.sabpaisaClientCode = globalSettings.sabpaisaClientCode;
+                                firestoreSettings.sabpaisaApiKey = globalSettings.sabpaisaApiKey;
+                                firestoreSettings.sabpaisaSecretKey = globalSettings.sabpaisaSecretKey;
+                                firestoreSettings.sabpaisaEnabled = globalSettings.sabpaisaEnabled;
+                                firestoreSettings.sabpaisaMode = globalSettings.sabpaisaMode;
+                                needsFirestoreUpdate = true;
+                            }
+                            
                             const finalSettings = { ...mergedSettings, ...firestoreSettings };
                             localStorage.setItem('ikko_settings', JSON.stringify(finalSettings));
                             console.log("Loaded dynamic settings from Firestore successfully.");
+                            
+                            if (needsFirestoreUpdate) {
+                                await db.collection('settings').doc('global').set(cleanUndefinedFields(finalSettings));
+                                console.log("Updated Firestore global settings with new settings.json configuration.");
+                            }
+                        } else {
+                            // If settings/global does not exist, save the current mergedSettings to Firestore
+                            await db.collection('settings').doc('global').set(cleanUndefinedFields(mergedSettings));
+                            console.log("Initialized global settings in Firestore.");
                         }
                     } catch (err) {
                         console.error("Failed to fetch settings from Firestore:", err);
