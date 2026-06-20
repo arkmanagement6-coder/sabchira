@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments | IKKO DIGITAL</title>
+    <link rel="stylesheet" href="style.css?v=2.4">
+</head>
+<body>
+
+    <!-- Header will be rendered here by app-core.js?v=11.0 -->
+    <div id="header-placeholder"></div>
+
+    <main class="checkout-container">
+        
+        <!-- Progress Stepper Tracker -->
+        <div class="checkout-progress-wrapper">
+            <div class="progress-bar-container">
+                <div class="progress-step active" id="step-indicator-address">
+                    <span class="step-icon">1</span>
+                    <span class="step-label">Address Details</span>
+                </div>
+                <div class="progress-line" id="line-1"></div>
+                <div class="progress-step" id="step-indicator-payment">
+                    <span class="step-icon">2</span>
+                    <span class="step-label">Payment & Summary</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-layout-grid">
+            
+            <!-- Wizard Step 1: Address Details Container -->
+            <div class="checkout-main-content" id="wizard-step-address">
+                <div class="checkout-card">
+                    <h2 class="section-title">Shipping & Delivery Details</h2>
+                    <form id="address-form" onsubmit="handleProceedToPayment(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="cust-name">Full Name *</label>
+                                <input type="text" id="cust-name" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cust-phone">Mobile Number *</label>
+                                <input type="tel" id="cust-phone" placeholder="9876543210" pattern="[0-9]{10}" title="Please enter a valid 10-digit mobile number" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="cust-address">Delivery Address *</label>
+                                <input type="text" id="cust-address" placeholder="Flat, House no., Building, Company, Apartment" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cust-city">City *</label>
+                                <input type="text" id="cust-city" placeholder="Mumbai" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cust-state">State *</label>
+                                <input type="text" id="cust-state" placeholder="Maharashtra" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cust-pin">PIN Code *</label>
+                                <input type="text" id="cust-pin" placeholder="400001" pattern="[0-9]{6}" title="Please enter a valid 6-digit PIN code" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary-action-orange" style="margin-top: 30px; width: 100%;">Proceed to Payment</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Wizard Step 2: Payment Selector & Summary (Matches screenshot layout) -->
+            <div class="checkout-main-content" id="wizard-step-payment" style="display: none;">
+                
+                <!-- Promotional Yellow Banner -->
+                <div class="promo-discount-banner">
+                    <div class="banner-decor left">
+                        <svg viewBox="0 0 100 100" width="36" height="36">
+                            <path d="M20,60 C20,80 80,80 80,60 C80,60 70,65 50,65 C30,65 20,60 20,60 Z" fill="#d35400"/>
+                            <path d="M25,60 C35,63 65,63 75,60" stroke="#f1c40f" stroke-width="2" fill="none"/>
+                            <path d="M50,25 C55,42 60,47 50,62 C40,47 45,42 50,25 Z" fill="#f1c40f"/>
+                            <path d="M50,33 C52,43 54,46 50,56 C46,43 48,43 50,33 Z" fill="#e74c3c"/>
+                        </svg>
+                    </div>
+                    <div class="banner-message">
+                        Get up to 80% Discount on All UPI Payments
+                    </div>
+                    <div class="banner-decor right">
+                        <svg viewBox="0 0 100 100" width="36" height="36">
+                            <polygon points="50,20 62,35 38,35" fill="#e74c3c"/>
+                            <rect x="43" y="35" width="14" height="28" fill="#3498db"/>
+                            <line x1="50" y1="63" x2="50" y2="78" stroke="#f1c40f" stroke-width="3"/>
+                            <path d="M48,78 L42,86 M52,78 L58,86 M50,78 L50,90" stroke="#e67e22" stroke-width="2"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Choose Payment Method Card -->
+                <div class="checkout-card" style="margin-top: 20px;">
+                    <h2 class="section-title">Choose Payment Method</h2>
+                    
+                    <div class="payment-method-options-list">
+                        
+                        <!-- PhonePe Option -->
+                        <div class="payment-app-row-card" id="card-phonepe" onclick="selectPaymentMethod('phonepe', true)">
+                            <div class="app-info-left">
+                                <div class="app-logo purple-bg">
+                                    <svg viewBox="0 0 40 40" width="36" height="36">
+                                        <rect width="40" height="40" rx="9" fill="#5f259f"/>
+                                        <path d="M12,27 L12,13 C12,13 17,11 20,11 C23,11 26,12.5 26,16 C26,19.5 23,21.5 20,21.5 L16.5,21.5 L16.5,27 Z" fill="#ffffff"/>
+                                        <path d="M16.5,14 L19.5,14 C21,14 22.2,14.5 22.2,16 C22.2,17.5 21,18 19.5,18 L16.5,18 Z" fill="#5f259f"/>
+                                    </svg>
+                                </div>
+                                <div class="app-texts">
+                                    <span class="app-name">PhonePe</span>
+                                    <span class="app-sub">Pay using UPI</span>
+                                </div>
+                            </div>
+                            <div class="app-arrow-right">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </div>
+
+                        <!-- Google Pay (GPay) Option -->
+                        <div class="payment-app-row-card" id="card-gpay" onclick="selectPaymentMethod('gpay', true)">
+                            <div class="app-info-left">
+                                <div class="app-logo white-bg" style="display: flex; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 2px;">
+                                    <svg viewBox="0 0 80 38.1" width="45" height="18" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M37.8,19.7V29h-3V6h7.8c1.9,0,3.7,0.7,5.1,2c1.4,1.2,2.1,3,2.1,4.9c0,1.9-0.7,3.6-2.1,4.9c-1.4,1.3-3.1,2-5.1,2L37.8,19.7L37.8,19.7z M37.8,8.8v8h5c1.1,0,2.2-0.4,2.9-1.2c1.6-1.5,1.6-4,0.1-5.5c0,0-0.1-0.1-0.1-0.1c-0.8-0.8-1.8-1.3-2.9-1.2L37.8,8.8L37.8,8.8z" fill="#5F6368"/>
+                                        <path d="M56.7,12.8c2.2,0,3.9,0.6,5.2,1.8s1.9,2.8,1.9,4.8V29H61v-2.2h-0.1c-1.2,1.8-2.9,2.7-4.9,2.7c-1.7,0-3.2-0.5-4.4-1.5c-1.1-1-1.8-2.4-1.8-3.9c0-1.6,0.6-2.9,1.8-3.9c1.2-1,2.9-1.4,4.9-1.4c1.8,0,3.2,0.3,4.3,1v-0.7c0-1-0.4-2-1.2-2.6c-0.8-0.7-1.8-1.1-2.9-1.1c-1.7,0-3,0.7-3.9,2.1l-2.6-1.6C51.8,13.8,53.9,12.8,56.7,12.8z M52.9,24.2c0,0.8,0.4,1.5,1,1.9c0.7,0.5,1.5,0.8,2.3,0.8c1.2,0,2.4-0.5,3.3-1.4c1-0.9,1.5-2,1.5-3.2c-0.9-0.7-2.2-1.1-3.9-1.1c-1.2,0-2.2,0.3-3,0.9C53.3,22.6,52.9,23.3,52.9,24.2z" fill="#5F6368"/>
+                                        <path d="M80,13.3l-9.9,22.7h-3l3.7-7.9l-6.5-14.7h3.2l4.7,11.3h0.1l4.6-11.3H80z" fill="#5F6368"/>
+                                        <path d="M25.9,17.7c0-0.9-0.1-1.8-0.2-2.7H13.2v5.1h7.1c-0.3,1.6-1.2,3.1-2.6,4v3.3H22C24.5,25.1,25.9,21.7,25.9,17.7z" fill="#4285F4"/>
+                                        <path d="M13.2,30.6c3.6,0,6.6-1.2,8.8-3.2l-4.3-3.3c-1.2,0.8-2.7,1.3-4.5,1.3c-3.4,0-6.4-2.3-7.4-5.5H1.4v3.4C3.7,27.8,8.2,30.6,13.2,30.6z" fill="#34A853"/>
+                                        <path d="M5.8,19.9c-0.6-1.6-0.6-3.4,0-5.1v-3.4H1.4c-1.9,3.7-1.9,8.1,0,11.9L5.8,19.9z" fill="#FBBC04"/>
+                                        <path d="M13.2,9.4c1.9,0,3.7,0.7,5.1,2l0,0l3.8-3.8c-2.4-2.2-5.6-3.5-8.8-3.4c-5,0-9.6,2.8-11.8,7.3l4.4,3.4C6.8,11.7,9.8,9.4,13.2,9.4z" fill="#EA4335"/>
+                                    </svg>
+                                </div>
+                                <div class="app-texts">
+                                    <span class="app-name">Google Pay (GPay)</span>
+                                    <span class="app-sub">Pay securely via Google Pay</span>
+                                </div>
+                            </div>
+                            <div class="app-arrow-right">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </div>
+
+                        <!-- Paytm Option -->
+                        <div class="payment-app-row-card" id="card-paytm" onclick="selectPaymentMethod('paytm', true)">
+                            <div class="app-info-left">
+                                <div class="app-logo lightblue-bg">
+                                    <svg viewBox="0 0 60 25" width="45" height="18" style="margin-top: 2px;">
+                                        <text x="0" y="19" font-family="'Outfit', sans-serif" font-weight="900" font-size="20" fill="#00b9f5">pay</text>
+                                        <text x="31" y="19" font-family="'Outfit', sans-serif" font-weight="900" font-size="20" fill="#002970">tm</text>
+                                    </svg>
+                                </div>
+                                <div class="app-texts">
+                                    <span class="app-name">Paytm</span>
+                                    <span class="app-sub">Wallet / UPI payment</span>
+                                </div>
+                            </div>
+                            <div class="app-arrow-right">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </div>
+
+                        <!-- SCAN PAY Option -->
+                        <div class="payment-app-row-card" id="card-scanpay" onclick="selectPaymentMethod('scanpay', true)">
+                            <div class="app-info-left">
+                                <div class="app-logo orange-border">
+                                    <svg viewBox="0 0 40 40" width="28" height="28" stroke="#ff8c00" stroke-width="2.5" fill="none">
+                                        <rect x="5" y="5" width="30" height="30" rx="5" stroke="#4a5568" stroke-width="2"/>
+                                        <rect x="10" y="10" width="6" height="6" rx="1"/>
+                                        <rect x="24" y="10" width="6" height="6" rx="1"/>
+                                        <rect x="10" y="24" width="6" height="6" rx="1"/>
+                                        <rect x="24" y="24" width="6" height="6" rx="1"/>
+                                        <line x1="12" y1="20" x2="28" y2="20" stroke="#e53e3e" stroke-dasharray="2 2"/>
+                                    </svg>
+                                </div>
+                                <div class="app-texts">
+                                    <span class="app-name">SCAN PAY</span>
+                                    <span class="app-sub">Scan with any UPI App</span>
+                                </div>
+                            </div>
+                            <div class="app-arrow-right">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Price Details Block (Matches screenshot block) -->
+                <div class="checkout-card" style="margin-top: 20px;">
+                    <h3 class="price-details-title">Price Details</h3>
+                    <div class="price-details-rows">
+                        <div class="price-row">
+                            <span class="price-row-label">Original Price</span>
+                            <span class="price-row-value" id="price-original-sum">Rs. 0.00</span>
+                        </div>
+                        <div class="price-row highlight-green">
+                            <span class="price-row-label">Product Discount</span>
+                            <span class="price-row-value" id="price-discount-sum">-Rs. 0.00</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-row-label">Delivery Charges</span>
+                            <span class="price-row-value text-green">FREE</span>
+                        </div>
+                        <div class="price-row total-row" style="margin-top: 12px; padding-top: 12px; border-top: 1.5px dashed var(--border-color); margin-bottom: 20px;">
+                            <span class="price-row-label">Total Amount</span>
+                            <span class="price-row-value" id="price-final-total" style="font-weight: 800; font-size: 1.1rem; color: var(--primary);">Rs. 0.00</span>
+                        </div>
+                    </div>
+                    <!-- Desktop checkout action button inside the card -->
+                    <div class="desktop-checkout-action-wrap">
+                        <button class="btn-primary-action-orange" onclick="handleOrangeOrderNowClick()">Order Now</button>
+                    </div>
+                </div>
+
+                <!-- Inline Edit Address Option -->
+                <div style="text-align: center; margin-top: 15px; display: block;">
+                    <button type="button" class="link-edit-btn" onclick="showWizardStep(1)">✏️ Edit Shipping Address</button>
+                </div>
+            </div>
+
+            <!-- Sidebar Order Summary Block -->
+            <div class="checkout-sidebar-summary">
+                <div class="checkout-card">
+                    <h2 class="section-title">Order Items</h2>
+                    <div class="checkout-summary-list" id="checkout-items-summary">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Payment Loading Redirect Overlay -->
+    <div class="verification-modal-overlay" id="payment-loading-overlay" style="display: none;">
+        <div class="verification-modal" style="max-width: 320px; text-align: center; padding: 30px; border-radius: 12px;">
+            <div class="bank-verification-loader">
+                <div class="verification-spinner"></div>
+            </div>
+            <h4 style="margin-top: 20px; font-family: var(--font-heading); font-size: 1.1rem; color: var(--primary); margin-bottom: 5px;">Redirecting to UPI Secure Payment...</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Please do not refresh or click back.</p>
+        </div>
+    </div>
+
+    <!-- Sticky Bottom Bar (For Mobile Layout) -->
+    <div class="mobile-sticky-checkout-bar" id="sticky-bottom-action-bar" style="display: none;">
+        <div class="price-summary-left">
+            <span class="strikethrough-original" id="sticky-original-price">Rs. 0.00</span>
+            <span class="final-price-bold" id="sticky-final-price">Rs. 0.00</span>
+        </div>
+        <button class="btn-orange-submit" onclick="handleOrangeOrderNowClick()">Order Now</button>
+    </div>
+
+    <!-- Footer will be rendered here by app-core.js?v=11.0 -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Core Scripts -->
+    <script src="app-core.js?v=11.0"></script>
+    <script>
+        let selectedPaymentMethod = ''; // 'phonepe', 'paytm', or 'scanpay'
+        let currentWizardStep = 1;
+
+        // Form wizard navigation
+        function showWizardStep(step) {
+            currentWizardStep = step;
+            const addressSec = document.getElementById('wizard-step-address');
+            const paymentSec = document.getElementById('wizard-step-payment');
+            const stickyBar = document.getElementById('sticky-bottom-action-bar');
+            
+            const indAddress = document.getElementById('step-indicator-address');
+            const indPayment = document.getElementById('step-indicator-payment');
+            
+            if (step === 1) {
+                addressSec.style.display = 'block';
+                paymentSec.style.display = 'none';
+                stickyBar.classList.remove('active-step2');
+                
+                indAddress.classList.add('active');
+                indAddress.classList.remove('completed');
+                indAddress.querySelector('.step-icon').innerText = '1';
+                indPayment.classList.remove('active');
+            } else if (step === 2) {
+                addressSec.style.display = 'none';
+                paymentSec.style.display = 'block';
+                stickyBar.classList.add('active-step2');
+                
+                indAddress.classList.remove('active');
+                indAddress.classList.add('completed');
+                indAddress.querySelector('.step-icon').innerHTML = `
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                `;
+                indPayment.classList.add('active');
+                
+                // Calculate pricing
+                renderCheckoutSummary();
+
+                // Pre-select PhonePe by default
+                selectPaymentMethod('phonepe');
+            }
+        }
+
+        function handleProceedToPayment(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const city = document.getElementById('cust-city').value.trim();
+            const state = document.getElementById('cust-state').value.trim();
+            const pin = document.getElementById('cust-pin').value.trim();
+            
+            if (!name || !phone || !address || !city || !state || !pin) {
+                alert('Please fill out all shipping details.');
+                return;
+            }
+            if (phone.length !== 10 || isNaN(phone)) {
+                alert('Please enter a valid 10-digit mobile number.');
+                return;
+            }
+            if (pin.length !== 6 || isNaN(pin)) {
+                alert('Please enter a valid 6-digit PIN code.');
+                return;
+            }
+            
+            // Save customer details to localStorage for future checkout convenience
+            try {
+                const customerDetails = {
+                    name,
+                    phone,
+                    address,
+                    city,
+                    state,
+                    pin
+                };
+                localStorage.setItem('ikko_customer', JSON.stringify(customerDetails));
+            } catch (e) {
+                console.error("Error saving ikko_customer to localStorage:", e);
+            }
+            
+            showWizardStep(2);
+        }
+
+        // Selection of PhonePe, Paytm, SCAN PAY
+        function selectPaymentMethod(method, autoRedirect = false) {
+            selectedPaymentMethod = method;
+            
+            // Toggle active card styles
+            document.querySelectorAll('.payment-app-row-card').forEach(card => card.classList.remove('active'));
+            
+            let cardId = '';
+            if (method === 'phonepe') cardId = 'card-phonepe';
+            else if (method === 'paytm') cardId = 'card-paytm';
+            else if (method === 'scanpay') cardId = 'card-scanpay';
+            else if (method === 'gpay') cardId = 'card-gpay';
+            
+            const selectedCard = document.getElementById(cardId);
+            if (selectedCard) selectedCard.classList.add('active');
+            
+            // Immediately initiate payment redirection if explicitly clicked by user
+            if (autoRedirect) {
+                setTimeout(() => {
+                    handleOrangeOrderNowClick();
+                }, 250);
+            }
+        }
+
+        // Calculate and render original price, discount, and total
+        function getOriginalTotal() {
+            const cart = getCart();
+            return cart.reduce((total, item) => {
+                const originalPriceStr = item.comparePrice || item.price;
+                return total + (parsePrice(originalPriceStr) * item.qty);
+            }, 0);
+        }
+
+        function renderCheckoutSummary() {
+            const summaryContainer = document.getElementById('checkout-items-summary');
+            if (!summaryContainer) return;
+
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Your cart is empty. Please add products before checking out.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Render summary items
+            summaryContainer.innerHTML = cart.map(item => `
+                <div class="checkout-summary-item">
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="checkout-summary-item-info">
+                        <span class="checkout-summary-item-title">${item.title}</span>
+                        <span class="checkout-summary-item-qty">Qty: ${item.qty}</span>
+                    </div>
+                    <span class="checkout-summary-item-price">${item.price}</span>
+                </div>
+            `).join('');
+
+            const originalTotal = getOriginalTotal();
+            const finalTotal = getCartTotal();
+            const discount = originalTotal - finalTotal;
+
+            // Update main details
+            document.getElementById('price-original-sum').innerText = formatPrice(originalTotal);
+            document.getElementById('price-discount-sum').innerText = '-' + formatPrice(discount);
+            document.getElementById('price-final-total').innerText = formatPrice(finalTotal);
+
+            // Update bottom sticky bar
+            document.getElementById('sticky-original-price').innerText = formatPrice(originalTotal);
+            document.getElementById('sticky-final-price').innerText = formatPrice(finalTotal);
+        }
+
+        // Open modal when customer clicks "Order Now"
+        async function handleOrangeOrderNowClick() {
+            if (!selectedPaymentMethod) {
+                alert('Please select a payment method.');
+                return;
+            }
+
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const city = document.getElementById('cust-city').value.trim();
+            const state = document.getElementById('cust-state').value.trim();
+            const pin = document.getElementById('cust-pin').value.trim();
+
+            if (!name || !phone || !address || !city || !state || !pin) {
+                alert('Shipping details are incomplete. Please edit address.');
+                showWizardStep(1);
+                return;
+            }
+
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Your cart is empty.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const settings = getSettings();
+            const total = getCartTotal();
+            const orderNum = Math.floor(100000 + Math.random() * 900000);
+            const orderId = `IKKO-${orderNum}`;
+
+            // Create order object with pending_payment status
+            const order = {
+                id: orderId,
+                date: new Date().toISOString(),
+                status: 'pending_payment', // Awaiting status callback redirect
+                paymentMethod: 'upi',
+                upiProvider: selectedPaymentMethod,
+                utr: 'Pending Gateway',
+                customer: {
+                    name,
+                    phone,
+                    address,
+                    city,
+                    state,
+                    pin
+                },
+                items: cart,
+                total: total
+            };
+
+            // Save order to localStorage
+            saveOrder(order);
+
+            // Show loading spinner
+            document.getElementById('payment-loading-overlay').style.display = 'flex';
+
+            // Check if SabPaisa integration is enabled
+            if (settings.sabpaisaEnabled) {
+                if (settings.sabpaisaMode === 'test') {
+                    // Redirect directly to the product's Razorpay payment link
+                    setTimeout(async () => {
+                        clearCart();
+                        let paymentLink = 'https://rzp.io/rzp/tHlmofq';
+                        if (cart.length > 0) {
+                            const products = await getProducts();
+                            const matchingProduct = products.find(p => String(p.id) === String(cart[0].id));
+                            if (matchingProduct && matchingProduct.paymentLink) {
+                                paymentLink = matchingProduct.paymentLink;
+                            }
+                        }
+                        window.location.href = paymentLink;
+                    }, 1000);
+                    return;
+                }
+
+                // Call server proxy API for SabPaisa
+                fetch('/api/create-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        gateway: 'sabpaisa',
+                        clientCode: settings.sabpaisaClientCode,
+                        apiKey: settings.sabpaisaApiKey,
+                        secretKey: settings.sabpaisaSecretKey,
+                        mode: settings.sabpaisaMode,
+                        client_txn_id: orderId,
+                        amount: total.toFixed(2),
+                        customer_name: name,
+                        customer_mobile: phone,
+                        redirect_url: window.location.origin + '/order-confirmation.html'
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    // Extremely robust check for success status or message
+                    const isSuccess = res.success === true || 
+                                      res.status === 'success' || 
+                                      res.status === 'SUCCESS' || 
+                                      res.status === 'SUCCESSFUL' ||
+                                      res.statusCode === 200 ||
+                                      (res.message && res.message.toLowerCase().includes('success'));
+                                      
+                    const checkoutUrl = (res.data && res.data.checkoutUrl) || res.checkoutUrl || (res.data && res.data.paymentUrl) || res.paymentUrl;
+                    const clientSecret = (res.data && res.data.clientSecret) || res.clientSecret;
+
+                    if (isSuccess && checkoutUrl) {
+                        clearCart();
+                        let redirectUrl = checkoutUrl;
+                        if (clientSecret) {
+                            redirectUrl += (redirectUrl.includes('?') ? '&' : '?') + 'clientSecret=' + encodeURIComponent(clientSecret);
+                        }
+                        window.location.href = redirectUrl;
+                    } else {
+                        document.getElementById('payment-loading-overlay').style.display = 'none';
+                        alert('SabPaisa Gateway Error: ' + (res.message || res.msg || 'Unable to generate checkout link.'));
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('payment-loading-overlay').style.display = 'none';
+                    console.error(err);
+                    alert('Network Error connecting to SabPaisa server proxy.');
+                });
+            } else if (settings.upiApiKey && settings.upiApiKey !== 'test' && settings.upiApiKey !== '') {
+                // Fallback UPIGateway Live mode - Call server proxy API
+                fetch('/api/create-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        key: settings.upiApiKey,
+                        client_txn_id: orderId,
+                        amount: total.toFixed(2),
+                        p_info: 'IKKO DIGITAL Order ' + orderId,
+                        customer_name: name,
+                        customer_mobile: phone,
+                        redirect_url: window.location.origin + '/order-confirmation.html'
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status && res.data && res.data.payment_url) {
+                        clearCart();
+                        window.location.href = res.data.payment_url;
+                    } else {
+                        document.getElementById('payment-loading-overlay').style.display = 'none';
+                        alert('Payment Gateway Error: ' + (res.msg || 'Unable to generate payment link.'));
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('payment-loading-overlay').style.display = 'none';
+                    console.error(err);
+                    alert('Network Error connecting to server proxy.');
+                });
+            } else {
+                // Redirect directly to the product's Razorpay payment link
+                setTimeout(async () => {
+                    clearCart();
+                    let paymentLink = 'https://rzp.io/rzp/tHlmofq';
+                    if (cart.length > 0) {
+                        const products = await getProducts();
+                        const matchingProduct = products.find(p => String(p.id) === String(cart[0].id));
+                        if (matchingProduct && matchingProduct.paymentLink) {
+                            paymentLink = matchingProduct.paymentLink;
+                        }
+                    }
+                    window.location.href = paymentLink;
+                }, 1000);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            // Do not pre-fill dummy values so the user is forced to enter their own shipping details
+            // We start at Step 1 (Address Form) as requested by the user
+            showWizardStep(1);
+            
+            // Render the checkout summary on load so the "Order Items" block is populated on Step 1
+            renderCheckoutSummary();
+            
+            // Auto-fill customer info if previously entered
+            try {
+                const customer = JSON.parse(localStorage.getItem('ikko_customer'));
+                if (customer) {
+                    if (customer.name) document.getElementById('cust-name').value = customer.name;
+                    if (customer.phone) document.getElementById('cust-phone').value = customer.phone;
+                    if (customer.address) document.getElementById('cust-address').value = customer.address;
+                    if (customer.city) document.getElementById('cust-city').value = customer.city;
+                    if (customer.state) document.getElementById('cust-state').value = customer.state;
+                    if (customer.pin) document.getElementById('cust-pin').value = customer.pin;
+                }
+            } catch (e) {
+                console.error("Error reading ikko_customer from localStorage:", e);
+            }
+        });
+    </script>
+</body>
+</html>

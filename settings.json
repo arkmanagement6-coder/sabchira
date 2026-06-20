@@ -1,0 +1,20 @@
+{
+  "sabpaisaEnabled": false,
+  "sabpaisaClientCode": "JARV1",
+  "sabpaisaApiKey": "sp_R89a1KoXYB9MCf6ODyxjcujarerdUWbnyvv11XpH-kc",
+  "sabpaisaSecretKey": "sec_0w0qHWovFvgZkTa5Ol_O_Vx4xGgBJjlYZtY1bVw8oUE",
+  "sabpaisaMode": "live",
+  "upiEnabled": true,
+  "upiId": "sabpaisa.lucky06@hdfcbank",
+  "merchantName": "JARVIS AI",
+  "firebaseEnabled": true,
+  "firebaseConfig": {
+    "apiKey": "AIzaSyAJTk4iJzlmFsrzAQrm-iqpXnS5iykQqsU",
+    "authDomain": "ikko-digital.firebaseapp.com",
+    "projectId": "ikko-digital",
+    "storageBucket": "ikko-digital.firebasestorage.app",
+    "messagingSenderId": "147824541932",
+    "appId": "1:147824541932:web:3a4ba1344e84391757e5c9",
+    "measurementId": "G-8JN34Y14V4"
+  }
+}
