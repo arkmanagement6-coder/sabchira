@@ -1,8 +1,8 @@
 {
-  "sabpaisaEnabled": false,
-  "sabpaisaClientCode": "JARV1",
-  "sabpaisaApiKey": "sp_R89a1KoXYB9MCf6ODyxjcujarerdUWbnyvv11XpH-kc",
-  "sabpaisaSecretKey": "sec_0w0qHWovFvgZkTa5Ol_O_Vx4xGgBJjlYZtY1bVw8oUE",
+  "sabpaisaEnabled": true,
+  "sabpaisaClientCode": "LUCK1",
+  "sabpaisaApiKey": "sp_A4EHc3rOQmN3L6Zed0q9Cx7CHgnDubPYCC0XnpJlAl0",
+  "sabpaisaSecretKey": "sec_-n8LkEjTI6btD-1u_uuWxYj-HPc20yW0NMAZhPEF49M",
   "sabpaisaMode": "live",
   "upiEnabled": true,
   "upiId": "sabpaisa.lucky06@hdfcbank",
