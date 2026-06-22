@@ -67,7 +67,7 @@ module.exports = (req, res) => {
                     }
                 };
                 
-                console.log(`[SabPaisa Request] Host: ${hostname}, MID: ${merchantId}, TxnId: ${merchantTxnId}`);
+                console.log(`[SabPaisa Request] Host: ${hostname}, MID: ${merchantId}, TxnId: ${merchantTxnId}, Payload: ${payload}`);
                 
                 const apiReq = https.request(options, (apiRes) => {
                     let apiData = '';
@@ -75,6 +75,7 @@ module.exports = (req, res) => {
                         apiData += chunk;
                     });
                     apiRes.on('end', () => {
+                        console.log(`[SabPaisa Response] Status: ${apiRes.statusCode}, Body: ${apiData}`);
                         res.statusCode = apiRes.statusCode;
                         res.setHeader('Content-Type', 'application/json');
                         res.end(apiData);

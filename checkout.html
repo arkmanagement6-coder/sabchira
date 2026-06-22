@@ -515,7 +515,7 @@
                         window.location.href = redirectUrl;
                     } else {
                         document.getElementById('payment-loading-overlay').style.display = 'none';
-                        alert('SabPaisa Gateway Error: ' + (res.message || res.msg || 'Unable to generate checkout link.'));
+                        alert('SabPaisa Gateway Error details: ' + JSON.stringify(res));
                     }
                 })
                 .catch(err => {
