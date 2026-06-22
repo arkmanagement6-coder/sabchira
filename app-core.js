@@ -792,10 +792,10 @@ function dbInit() {
             upiEnabled: true,
             upiId: 'sabpaisa.lucky06@hdfcbank',
             merchantName: 'JARVIS AI',
-            sabpaisaEnabled: false,
-            sabpaisaClientCode: 'JARV1',
-            sabpaisaApiKey: 'sp_R89a1KoXYB9MCf6ODyxjcujarerdUWbnyvv11XpH-kc',
-            sabpaisaSecretKey: 'sec_0w0qHWovFvgZkTa5Ol_O_Vx4xGgBJjlYZtY1bVw8oUE',
+            sabpaisaEnabled: true,
+            sabpaisaClientCode: 'LUCK1',
+            sabpaisaApiKey: 'sp_A4EHc3rOQmN3L6Zed0q9Cx7CHgnDubPYCC0XnpJlAl0',
+            sabpaisaSecretKey: 'sec_-n8LkEjTI6btD-1u_uuWxYj-HPc20yW0NMAZhPEF49M',
             sabpaisaMode: 'live'
         }));
     }
@@ -845,18 +845,29 @@ async function loadGlobalSettings() {
                         if (doc.exists) {
                             const firestoreSettings = doc.data();
                             
+                            const finalSettings = { ...mergedSettings, ...firestoreSettings };
+                            
+                            // Ensure settings.json values always take absolute precedence over database
+                            if (globalSettings.sabpaisaEnabled !== undefined) {
+                                finalSettings.sabpaisaEnabled = globalSettings.sabpaisaEnabled;
+                            }
+                            if (globalSettings.sabpaisaClientCode !== undefined) {
+                                finalSettings.sabpaisaClientCode = globalSettings.sabpaisaClientCode;
+                                finalSettings.sabpaisaApiKey = globalSettings.sabpaisaApiKey;
+                                finalSettings.sabpaisaSecretKey = globalSettings.sabpaisaSecretKey;
+                                finalSettings.sabpaisaMode = globalSettings.sabpaisaMode;
+                            }
+                            if (globalSettings.firebaseEnabled !== undefined) {
+                                finalSettings.firebaseEnabled = globalSettings.firebaseEnabled;
+                            }
+                            
                             // Check if settings.json has been updated with different SabPaisa credentials
                             let needsFirestoreUpdate = false;
-                            if (globalSettings.sabpaisaClientCode && firestoreSettings.sabpaisaClientCode !== globalSettings.sabpaisaClientCode) {
-                                firestoreSettings.sabpaisaClientCode = globalSettings.sabpaisaClientCode;
-                                firestoreSettings.sabpaisaApiKey = globalSettings.sabpaisaApiKey;
-                                firestoreSettings.sabpaisaSecretKey = globalSettings.sabpaisaSecretKey;
-                                firestoreSettings.sabpaisaEnabled = globalSettings.sabpaisaEnabled;
-                                firestoreSettings.sabpaisaMode = globalSettings.sabpaisaMode;
+                            if (firestoreSettings.sabpaisaClientCode !== globalSettings.sabpaisaClientCode || 
+                                firestoreSettings.sabpaisaEnabled !== globalSettings.sabpaisaEnabled) {
                                 needsFirestoreUpdate = true;
                             }
                             
-                            const finalSettings = { ...mergedSettings, ...firestoreSettings };
                             localStorage.setItem('ikko_settings', JSON.stringify(finalSettings));
                             console.log("Loaded dynamic settings from Firestore successfully.");
                             
@@ -904,9 +915,9 @@ function getSettings() {
     
     // Ensure migration fields exist
     if (settings.sabpaisaClientCode === undefined) {
-        settings.sabpaisaClientCode = 'JARV1';
-        settings.sabpaisaApiKey = 'sp_R89a1KoXYB9MCf6ODyxjcujarerdUWbnyvv11XpH-kc';
-        settings.sabpaisaSecretKey = 'sec_0w0qHWovFvgZkTa5Ol_O_Vx4xGgBJjlYZtY1bVw8oUE';
+        settings.sabpaisaClientCode = 'LUCK1';
+        settings.sabpaisaApiKey = 'sp_A4EHc3rOQmN3L6Zed0q9Cx7CHgnDubPYCC0XnpJlAl0';
+        settings.sabpaisaSecretKey = 'sec_-n8LkEjTI6btD-1u_uuWxYj-HPc20yW0NMAZhPEF49M';
         settings.sabpaisaMode = 'live';
         changed = true;
     }

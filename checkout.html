@@ -556,19 +556,8 @@
                     alert('Network Error connecting to server proxy.');
                 });
             } else {
-                // Redirect directly to the product's Razorpay payment link
-                setTimeout(async () => {
-                    clearCart();
-                    let paymentLink = 'https://rzp.io/rzp/tHlmofq';
-                    if (cart.length > 0) {
-                        const products = await getProducts();
-                        const matchingProduct = products.find(p => String(p.id) === String(cart[0].id));
-                        if (matchingProduct && matchingProduct.paymentLink) {
-                            paymentLink = matchingProduct.paymentLink;
-                        }
-                    }
-                    window.location.href = paymentLink;
-                }, 1000);
+                document.getElementById('payment-loading-overlay').style.display = 'none';
+                alert('Payment Gateway Error: SabPaisa gateway is not enabled. Please configure settings.');
             }
         }
 
