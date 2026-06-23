@@ -790,9 +790,9 @@ function dbInit() {
     if (!localStorage.getItem('ikko_settings')) {
         localStorage.setItem('ikko_settings', JSON.stringify({
             upiEnabled: true,
-            upiId: 'sabpaisa.lucky06@hdfcbank',
-            merchantName: 'JARVIS AI',
-            sabpaisaEnabled: true,
+            upiId: '8888817766@ibl',
+            merchantName: 'RAVI S DHAKRE',
+            sabpaisaEnabled: false,
             sabpaisaClientCode: 'LUCK1',
             sabpaisaApiKey: 'sp_A4EHc3rOQmN3L6Zed0q9Cx7CHgnDubPYCC0XnpJlAl0',
             sabpaisaSecretKey: 'sec_-n8LkEjTI6btD-1u_uuWxYj-HPc20yW0NMAZhPEF49M',
@@ -851,6 +851,12 @@ async function loadGlobalSettings() {
                             if (globalSettings.sabpaisaEnabled !== undefined) {
                                 finalSettings.sabpaisaEnabled = globalSettings.sabpaisaEnabled;
                             }
+                            if (globalSettings.upiId !== undefined) {
+                                finalSettings.upiId = globalSettings.upiId;
+                            }
+                            if (globalSettings.merchantName !== undefined) {
+                                finalSettings.merchantName = globalSettings.merchantName;
+                            }
                             if (globalSettings.sabpaisaClientCode !== undefined) {
                                 finalSettings.sabpaisaClientCode = globalSettings.sabpaisaClientCode;
                                 finalSettings.sabpaisaApiKey = globalSettings.sabpaisaApiKey;
@@ -861,10 +867,12 @@ async function loadGlobalSettings() {
                                 finalSettings.firebaseEnabled = globalSettings.firebaseEnabled;
                             }
                             
-                            // Check if settings.json has been updated with different SabPaisa credentials
+                            // Check if settings.json has been updated with different SabPaisa or UPI credentials
                             let needsFirestoreUpdate = false;
                             if (firestoreSettings.sabpaisaClientCode !== globalSettings.sabpaisaClientCode || 
-                                firestoreSettings.sabpaisaEnabled !== globalSettings.sabpaisaEnabled) {
+                                firestoreSettings.sabpaisaEnabled !== globalSettings.sabpaisaEnabled ||
+                                firestoreSettings.upiId !== globalSettings.upiId ||
+                                firestoreSettings.merchantName !== globalSettings.merchantName) {
                                 needsFirestoreUpdate = true;
                             }
                             
@@ -899,12 +907,12 @@ function getSettings() {
     
     let changed = false;
     // Migrate default mock values to the user's requested VPA & merchant details
-    if (!settings.upiId || settings.upiId === 'test@upi' || settings.upiId === 'sabpaisajarvis@nyes') {
-        settings.upiId = 'sabpaisa.lucky06@hdfcbank';
+    if (!settings.upiId || settings.upiId === 'test@upi' || settings.upiId === 'sabpaisajarvis@nyes' || settings.upiId === 'sabpaisa.lucky06@hdfcbank') {
+        settings.upiId = '8888817766@ibl';
         changed = true;
     }
-    if (!settings.merchantName || settings.merchantName === 'IKKO DIGITAL') {
-        settings.merchantName = 'JARVIS AI';
+    if (!settings.merchantName || settings.merchantName === 'IKKO DIGITAL' || settings.merchantName === 'JARVIS AI') {
+        settings.merchantName = 'RAVI S DHAKRE';
         changed = true;
     }
     if (settings.sabpaisaEnabled === undefined || (settings.sabpaisaEnabled && settings.sabpaisaApiKey === 'sp_R89a1KoXYB9MCf6ODyxjcujarerdUWbnyvv11XpH-kc')) {
