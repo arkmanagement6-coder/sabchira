@@ -118,6 +118,44 @@
                             </div>
                         </div>
 
+                        <!-- Paytm Option -->
+                        <div class="payment-app-row-card" id="card-paytm" onclick="selectPaymentMethod('paytm', true)">
+                            <div class="app-info-left">
+                                <div class="app-logo">
+                                    <svg viewBox="0 0 40 40" width="36" height="36">
+                                        <rect width="40" height="40" rx="9" fill="#00b9f5"/>
+                                        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="11" fill="#ffffff">Paytm</text>
+                                    </svg>
+                                </div>
+                                <div class="app-texts">
+                                    <span class="app-name">Paytm / UPI</span>
+                                    <span class="app-sub">Pay securely using Paytm UPI or Wallet</span>
+                                </div>
+                            </div>
+                            <div class="app-arrow-right">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </div>
+
+                        <!-- GPay Option -->
+                        <div class="payment-app-row-card" id="card-gpay" onclick="selectPaymentMethod('gpay', true)">
+                            <div class="app-info-left">
+                                <div class="app-logo">
+                                    <svg viewBox="0 0 40 40" width="36" height="36">
+                                        <rect width="40" height="40" rx="9" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+                                        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="11" fill="#1e293b">GPay</text>
+                                    </svg>
+                                </div>
+                                <div class="app-texts">
+                                    <span class="app-name">Google Pay (GPay)</span>
+                                    <span class="app-sub">Pay using GPay UPI app</span>
+                                </div>
+                            </div>
+                            <div class="app-arrow-right">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -396,12 +434,14 @@
             // Save order to localStorage
             saveOrder(order);
 
+            const methodLabel = selectedPaymentMethod === 'gpay' ? 'Google Pay (GPay)' : (selectedPaymentMethod === 'paytm' ? 'Paytm' : 'PhonePe');
+
             // Show redirecting loading state on order buttons
             const orderButtons = document.querySelectorAll('.btn-orange-submit, .btn-primary-action-orange');
             orderButtons.forEach(btn => {
                 btn.disabled = true;
                 btn.style.opacity = '0.7';
-                btn.innerText = 'Redirecting to PhonePe...';
+                btn.innerText = `Redirecting to ${methodLabel}...`;
             });
 
             try {
