@@ -194,25 +194,18 @@
     <!-- Core Scripts -->
     <script src="app-core.js?v=11.0"></script>
     <script>
-        function renderConfirmation() {
+        async function renderConfirmation() {
             const card = document.getElementById('confirmation-content-card');
             if (!card) return;
 
             const urlParams = new URLSearchParams(window.location.search);
             let orderId = urlParams.get('orderId') || urlParams.get('client_txn_id') || urlParams.get('merchant_txn_id');
-            let status = urlParams.get('status'); // 'success', 'failure', 'SUCCESS', etc.
-
-            if (status) {
-                status = status.toLowerCase();
-            }
 
             if (!orderId) {
                 // Fallback to the latest order placed on this browser if no ID is passed in the URL redirect
                 const orders = getOrders();
                 if (orders.length > 0) {
                     orderId = orders[orders.length - 1].id;
-                    // Treat static redirect from payment gateway as successful confirmation
-                    status = 'success'; 
                 }
             }
 
@@ -243,19 +236,34 @@
 
             const order = orders[orderIndex];
 
-            // Reconcile status callback if present
-            if (status) {
-                if (status === 'success' || status === 'successful') {
-                    order.status = 'pending';
-                    order.utr = 'Razorpay Verified';
-                    // Clear cart upon successful order placement
-                    if (typeof clearCart === 'function') {
-                        clearCart();
+            // Reconcile dynamic payment status via API call for PhonePe
+            if (order.paymentMethod === 'phonepe' && order.status === 'pending_payment') {
+                try {
+                    const checkRes = await fetch(`/api/check-status?orderId=${orderId}`);
+                    if (checkRes.ok) {
+                        const statusData = await checkRes.json();
+                        if (statusData && statusData.success) {
+                            const pgStatus = statusData.data.status;
+                            if (pgStatus === 'SUCCESS') {
+                                order.status = 'pending';
+                                order.utr = statusData.data.providerReferenceId || 'PhonePe Verified';
+                                if (typeof clearCart === 'function') {
+                                    clearCart();
+                                }
+                            } else if (pgStatus === 'FAILED') {
+                                order.status = 'cancelled';
+                                order.utr = 'Payment Failed';
+                            } else if (pgStatus === 'PENDING') {
+                                order.status = 'pending_payment';
+                                order.utr = 'Payment Pending';
+                            }
+                        }
                     }
-                } else if (status === 'failure' || status === 'failed') {
-                    order.status = 'cancelled';
-                    order.utr = 'Payment Failed';
+                } catch (e) {
+                    console.error("Error fetching PhonePe status:", e);
                 }
+                
+                // Save updated status
                 orders[orderIndex] = order;
                 localStorage.setItem('ikko_orders', JSON.stringify(orders));
             }
@@ -268,7 +276,7 @@
                             <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="3" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </div>
                         <h2 style="color: #e53e3e; font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800;">Payment Failed!</h2>
-                        <p style="color: var(--text-muted); margin: 15px auto 25px auto; max-width: 380px;">Your transaction could not be authorized by your bank. Any amount deducted will be refunded back to your account automatically.</p>
+                        <p style="color: var(--text-muted); margin: 15px auto 25px auto; max-width: 380px;">Your transaction could not be authorized by PhonePe. Please try checkout again.</p>
                         <div class="order-badge-id" style="margin-bottom: 25px; background-color: #f7fafc; color: var(--text-dark);">Order ID: ${order.id}</div>
                         <a href="checkout.html" class="confirm-home-btn" style="background-color: var(--accent); color: white; border: none;">Retry Checkout & Payment</a>
                     </div>
@@ -290,21 +298,17 @@
 
             const formattedSubtotal = formatPrice(order.total);
             let paymentText = '';
+            let statusText = '';
+            
             if (order.paymentMethod === 'cod') {
                 paymentText = 'Cash on Delivery (COD)';
-            } else if (order.paymentMethod === 'upi') {
-                const providerLabel = order.upiProvider ? (order.upiProvider === 'phonepe' ? 'PhonePe' : (order.upiProvider === 'paytm' ? 'Paytm' : (order.upiProvider === 'gpay' ? 'Google Pay' : 'SCAN PAY'))) : 'UPI QR';
-                if (order.utr === 'Razorpay Verified') {
-                    paymentText = `Online Payment (${providerLabel})`;
-                } else if (order.utr === 'Real-Time Verified') {
-                    paymentText = `${providerLabel} (Real-Time Confirmed)`;
-                } else if (order.utr === 'Auto-Verified') {
-                    paymentText = `${providerLabel} (Auto-Verified)`;
-                } else {
-                    paymentText = `${providerLabel} (UTR: ${order.utr || 'Pending'})`;
-                }
+                statusText = 'Awaiting Delivery';
+            } else if (order.paymentMethod === 'phonepe') {
+                paymentText = 'PhonePe PG Payment';
+                statusText = order.status === 'pending' ? 'Paid & Confirmed' : (order.status === 'pending_payment' ? 'Awaiting Payment Verification' : 'Payment Failed');
             } else {
                 paymentText = 'Online Payment';
+                statusText = 'Awaiting Delivery';
             }
 
             card.innerHTML = `
@@ -331,7 +335,7 @@
                         <h3>Billing & Payment</h3>
                         <p>
                             <strong>Method:</strong> ${paymentText}<br>
-                            <strong>Status:</strong> ${order.utr === 'Real-Time Verified' || order.utr === 'Auto-Verified' || order.utr === 'Razorpay Verified' ? 'Paid & Confirmed' : (order.paymentMethod === 'upi' ? 'Awaiting Verification' : 'Awaiting Delivery')}<br>
+                            <strong>Status:</strong> ${statusText}<br>
                             <strong>Expected Delivery:</strong> Your order will be delivered next 7 days
                         </p>
                     </div>
@@ -352,7 +356,7 @@
                         <span style="color: var(--accent-green); font-weight: bold;">FREE</span>
                     </div>
                     <div class="totals-row final">
-                        <span>Total Amount Pay</span>
+                        <span>Total Amount Paid</span>
                         <span>${formattedSubtotal}</span>
                     </div>
                 </div>

@@ -98,8 +98,8 @@
                     
                     <div class="payment-method-options-list">
                         
-                        <!-- PhonePe Option -->
-                        <div class="payment-app-row-card" id="card-phonepe" onclick="selectPaymentMethod('phonepe', true)">
+                        <!-- PhonePe Payment Gateway Option -->
+                        <div class="payment-app-row-card active" id="card-phonepe" onclick="selectPaymentMethod('phonepe', true)">
                             <div class="app-info-left">
                                 <div class="app-logo purple-bg">
                                     <svg viewBox="0 0 40 40" width="36" height="36">
@@ -109,74 +109,8 @@
                                     </svg>
                                 </div>
                                 <div class="app-texts">
-                                    <span class="app-name">PhonePe</span>
-                                    <span class="app-sub">Pay using UPI</span>
-                                </div>
-                            </div>
-                            <div class="app-arrow-right">
-                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                            </div>
-                        </div>
-
-                        <!-- Google Pay (GPay) Option -->
-                        <div class="payment-app-row-card" id="card-gpay" onclick="selectPaymentMethod('gpay', true)">
-                            <div class="app-info-left">
-                                <div class="app-logo white-bg" style="display: flex; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 2px;">
-                                    <svg viewBox="0 0 80 38.1" width="45" height="18" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M37.8,19.7V29h-3V6h7.8c1.9,0,3.7,0.7,5.1,2c1.4,1.2,2.1,3,2.1,4.9c0,1.9-0.7,3.6-2.1,4.9c-1.4,1.3-3.1,2-5.1,2L37.8,19.7L37.8,19.7z M37.8,8.8v8h5c1.1,0,2.2-0.4,2.9-1.2c1.6-1.5,1.6-4,0.1-5.5c0,0-0.1-0.1-0.1-0.1c-0.8-0.8-1.8-1.3-2.9-1.2L37.8,8.8L37.8,8.8z" fill="#5F6368"/>
-                                        <path d="M56.7,12.8c2.2,0,3.9,0.6,5.2,1.8s1.9,2.8,1.9,4.8V29H61v-2.2h-0.1c-1.2,1.8-2.9,2.7-4.9,2.7c-1.7,0-3.2-0.5-4.4-1.5c-1.1-1-1.8-2.4-1.8-3.9c0-1.6,0.6-2.9,1.8-3.9c1.2-1,2.9-1.4,4.9-1.4c1.8,0,3.2,0.3,4.3,1v-0.7c0-1-0.4-2-1.2-2.6c-0.8-0.7-1.8-1.1-2.9-1.1c-1.7,0-3,0.7-3.9,2.1l-2.6-1.6C51.8,13.8,53.9,12.8,56.7,12.8z M52.9,24.2c0,0.8,0.4,1.5,1,1.9c0.7,0.5,1.5,0.8,2.3,0.8c1.2,0,2.4-0.5,3.3-1.4c1-0.9,1.5-2,1.5-3.2c-0.9-0.7-2.2-1.1-3.9-1.1c-1.2,0-2.2,0.3-3,0.9C53.3,22.6,52.9,23.3,52.9,24.2z" fill="#5F6368"/>
-                                        <path d="M80,13.3l-9.9,22.7h-3l3.7-7.9l-6.5-14.7h3.2l4.7,11.3h0.1l4.6-11.3H80z" fill="#5F6368"/>
-                                        <path d="M25.9,17.7c0-0.9-0.1-1.8-0.2-2.7H13.2v5.1h7.1c-0.3,1.6-1.2,3.1-2.6,4v3.3H22C24.5,25.1,25.9,21.7,25.9,17.7z" fill="#4285F4"/>
-                                        <path d="M13.2,30.6c3.6,0,6.6-1.2,8.8-3.2l-4.3-3.3c-1.2,0.8-2.7,1.3-4.5,1.3c-3.4,0-6.4-2.3-7.4-5.5H1.4v3.4C3.7,27.8,8.2,30.6,13.2,30.6z" fill="#34A853"/>
-                                        <path d="M5.8,19.9c-0.6-1.6-0.6-3.4,0-5.1v-3.4H1.4c-1.9,3.7-1.9,8.1,0,11.9L5.8,19.9z" fill="#FBBC04"/>
-                                        <path d="M13.2,9.4c1.9,0,3.7,0.7,5.1,2l0,0l3.8-3.8c-2.4-2.2-5.6-3.5-8.8-3.4c-5,0-9.6,2.8-11.8,7.3l4.4,3.4C6.8,11.7,9.8,9.4,13.2,9.4z" fill="#EA4335"/>
-                                    </svg>
-                                </div>
-                                <div class="app-texts">
-                                    <span class="app-name">Google Pay (GPay)</span>
-                                    <span class="app-sub">Pay securely via Google Pay</span>
-                                </div>
-                            </div>
-                            <div class="app-arrow-right">
-                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                            </div>
-                        </div>
-
-                        <!-- Paytm Option -->
-                        <div class="payment-app-row-card" id="card-paytm" onclick="selectPaymentMethod('paytm', true)">
-                            <div class="app-info-left">
-                                <div class="app-logo lightblue-bg">
-                                    <svg viewBox="0 0 60 25" width="45" height="18" style="margin-top: 2px;">
-                                        <text x="0" y="19" font-family="'Outfit', sans-serif" font-weight="900" font-size="20" fill="#00b9f5">pay</text>
-                                        <text x="31" y="19" font-family="'Outfit', sans-serif" font-weight="900" font-size="20" fill="#002970">tm</text>
-                                    </svg>
-                                </div>
-                                <div class="app-texts">
-                                    <span class="app-name">Paytm</span>
-                                    <span class="app-sub">Wallet / UPI payment</span>
-                                </div>
-                            </div>
-                            <div class="app-arrow-right">
-                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="3.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                            </div>
-                        </div>
-
-                        <!-- SCAN PAY Option -->
-                        <div class="payment-app-row-card" id="card-scanpay" onclick="selectPaymentMethod('scanpay', true)">
-                            <div class="app-info-left">
-                                <div class="app-logo orange-border">
-                                    <svg viewBox="0 0 40 40" width="28" height="28" stroke="#ff8c00" stroke-width="2.5" fill="none">
-                                        <rect x="5" y="5" width="30" height="30" rx="5" stroke="#4a5568" stroke-width="2"/>
-                                        <rect x="10" y="10" width="6" height="6" rx="1"/>
-                                        <rect x="24" y="10" width="6" height="6" rx="1"/>
-                                        <rect x="10" y="24" width="6" height="6" rx="1"/>
-                                        <rect x="24" y="24" width="6" height="6" rx="1"/>
-                                        <line x1="12" y1="20" x2="28" y2="20" stroke="#e53e3e" stroke-dasharray="2 2"/>
-                                    </svg>
-                                </div>
-                                <div class="app-texts">
-                                    <span class="app-name">SCAN PAY</span>
-                                    <span class="app-sub">Scan with any UPI App</span>
+                                    <span class="app-name">PhonePe Gateway</span>
+                                    <span class="app-sub">Pay using UPI, Debit/Credit Card, NetBanking</span>
                                 </div>
                             </div>
                             <div class="app-arrow-right">
@@ -258,11 +192,9 @@
 
     <!-- Core Scripts -->
     <script src="app-core.js?v=11.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script>
-        let selectedPaymentMethod = ''; // 'phonepe', 'paytm', or 'scanpay'
+        let selectedPaymentMethod = ''; // 'phonepe'
         let currentWizardStep = 1;
-        let currentOrderId = '';
 
         // Form wizard navigation
         function showWizardStep(step) {
@@ -416,13 +348,8 @@
             document.getElementById('sticky-final-price').innerText = formatPrice(finalTotal);
         }
 
-        // Open modal when customer clicks "Order Now"
+        // Redirect directly to PhonePe Checkout Gateway when customer clicks "Order Now"
         async function handleOrangeOrderNowClick() {
-            if (!selectedPaymentMethod) {
-                alert('Please select a payment method.');
-                return;
-            }
-
             const name = document.getElementById('cust-name').value.trim();
             const phone = document.getElementById('cust-phone').value.trim();
             const address = document.getElementById('cust-address').value.trim();
@@ -443,7 +370,6 @@
                 return;
             }
 
-            const settings = getSettings();
             const total = getCartTotal();
             const orderNum = Math.floor(100000 + Math.random() * 900000);
             const orderId = `IKKO-${orderNum}`;
@@ -452,10 +378,9 @@
             const order = {
                 id: orderId,
                 date: new Date().toISOString(),
-                status: 'pending_payment', // Awaiting status callback redirect
-                paymentMethod: 'upi',
-                upiProvider: selectedPaymentMethod,
-                utr: 'Pending Gateway',
+                status: 'pending_payment',
+                paymentMethod: 'phonepe',
+                utr: 'Pending PhonePe',
                 customer: {
                     name,
                     phone,
@@ -471,40 +396,48 @@
             // Save order to localStorage
             saveOrder(order);
 
-            // Setup payee details and transaction ID
-            const payeeUpi = settings.upiId || '8888817766@ibl';
-            const payeeName = settings.merchantName || 'RAVI S DHAKRE';
-            
-            document.getElementById('modal-payment-amount').innerText = `Rs. ${total.toFixed(2)}`;
-            currentOrderId = orderId;
-            
-            // Build deep link for mobile apps
-            const deepLink = `upi://pay?pa=${payeeUpi}&pn=${encodeURIComponent(payeeName)}&am=${total.toFixed(2)}&cu=INR&tn=Order_${orderId}`;
-            document.getElementById('upi-deep-link-btn').href = deepLink;
-            
-            // Show mobile pay button if on mobile device
-            if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
-                document.querySelector('.mobile-only-pay-btn-wrap').style.display = 'block';
-            } else {
-                document.querySelector('.mobile-only-pay-btn-wrap').style.display = 'none';
-            }
-            
-            // Generate dynamic UPI QR Code
-            try {
-                new QRious({
-                    element: document.getElementById('upi-qr-canvas'),
-                    value: deepLink,
-                    size: 200,
-                    level: 'H'
-                });
-            } catch (err) {
-                console.error("Error rendering UPI QR code:", err);
-            }
+            // Show redirecting loading state on order buttons
+            const orderButtons = document.querySelectorAll('.btn-orange-submit, .btn-primary-action-orange');
+            orderButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+                btn.innerText = 'Redirecting to PhonePe...';
+            });
 
-            // Show modal and start session countdown
-            document.getElementById('upi-payment-modal-overlay').style.display = 'flex';
-            document.getElementById('payment-utr-input').value = ''; // Reset input
-            startPaymentTimer(orderId);
+            try {
+                const response = await fetch('/api/create-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderId: orderId,
+                        amount: total,
+                        redirectUrl: `${window.location.origin}/order-confirmation.html?orderId=${orderId}`
+                    })
+                });
+
+                const result = await response.json();
+                if (result && result.success && result.redirectUrl) {
+                    // Redirect directly to PhonePe Payment Checkout Gateway
+                    window.location.href = result.redirectUrl;
+                } else {
+                    alert('Failed to initiate PhonePe checkout: ' + (result.message || 'Please try again.'));
+                    orderButtons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.innerText = 'Order Now';
+                    });
+                }
+            } catch (err) {
+                console.error('PhonePe connection error:', err);
+                alert('Connection error occurred while redirecting to PhonePe. Please check your internet and try again.');
+                orderButtons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.innerText = 'Order Now';
+                });
+            }
         }
 
         window.addEventListener('load', () => {
@@ -531,125 +464,6 @@
             }
         });
 
-        let paymentTimerInterval = null;
-        function startPaymentTimer(orderId) {
-            let duration = 300; // 5 minutes in seconds
-            const display = document.getElementById('payment-countdown-timer');
-            
-            if (paymentTimerInterval) clearInterval(paymentTimerInterval);
-            
-            paymentTimerInterval = setInterval(() => {
-                let minutes = Math.floor(duration / 60);
-                let seconds = duration % 60;
-                
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-                
-                display.innerText = minutes + ':' + seconds;
-                
-                if (--duration < 0) {
-                    clearInterval(paymentTimerInterval);
-                    alert('Payment session expired. Please try checkout again.');
-                    closeUpiPaymentModal();
-                }
-            }, 1000);
-        }
-
-        function closeUpiPaymentModal() {
-            document.getElementById('upi-payment-modal-overlay').style.display = 'none';
-            if (paymentTimerInterval) clearInterval(paymentTimerInterval);
-        }
-
-        function submitUpiPaymentConfirmation() {
-            const utrInput = document.getElementById('payment-utr-input').value.trim();
-            if (utrInput.length !== 12 || isNaN(utrInput)) {
-                alert('Please enter a valid 12-digit UPI UTR/Transaction Ref number.');
-                return;
-            }
-            
-            const orderId = currentOrderId;
-            const orders = getOrders();
-            const orderIndex = orders.findIndex(o => o.id === orderId);
-            
-            if (orderIndex !== -1) {
-                const order = orders[orderIndex];
-                order.status = 'pending';
-                order.utr = utrInput;
-                orders[orderIndex] = order;
-                localStorage.setItem('ikko_orders', JSON.stringify(orders));
-                
-                // Clear cart
-                clearCart();
-                
-                // Close modal
-                closeUpiPaymentModal();
-                
-                // Redirect to order confirmation page
-                window.location.href = `order-confirmation.html?orderId=${orderId}`;
-            } else {
-                alert('Order session not found. Please try again.');
-                closeUpiPaymentModal();
-            }
-        }
     </script>
-
-    <!-- UPI Payment QR Code Verification Modal -->
-    <div class="verification-modal-overlay" id="upi-payment-modal-overlay" style="display: none;">
-        <div class="verification-modal">
-            <div class="vmodal-header">
-                <div class="vmodal-title-box">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="#2c5282" stroke-width="2.5" fill="none">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                    <h3 style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--primary); margin: 0; font-weight: 800;">Secure UPI Payment</h3>
-                </div>
-                <button class="vmodal-close-x" onclick="closeUpiPaymentModal()">&times;</button>
-            </div>
-            <div class="vmodal-body">
-                <div class="vmodal-instruction">
-                    Scan the QR code below or pay directly to the UPI ID to complete your payment of <strong style="color: #e53e3e; font-size: 1.1rem;" id="modal-payment-amount">Rs. 999.00</strong>.
-                </div>
-                
-                <!-- Display QR Code -->
-                <div class="vmodal-qr-frame">
-                    <canvas id="upi-qr-canvas" style="display: block; margin: 0 auto;"></canvas>
-                </div>
-
-
-                <!-- Deep Link Button for Mobile Users -->
-                <div class="mobile-only-pay-btn-wrap" style="text-align: center; margin-bottom: 20px; display: none;">
-                    <a href="#" id="upi-deep-link-btn" class="btn-orange-submit" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 800; color: white; width: 100%; box-sizing: border-box; box-shadow: var(--shadow-md);">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" style="transform: rotate(-45deg);">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                        Pay via UPI App (PhonePe/GPay)
-                    </a>
-                </div>
-
-                <!-- UTR Verification Form -->
-                <div class="vmodal-utr-form">
-                    <label class="utr-label" for="payment-utr-input">Enter 12-Digit UTR / UPI Ref No.</label>
-                    <input type="text" id="payment-utr-input" placeholder="e.g. 123456789012" maxlength="12" pattern="\d{12}" required>
-                    <div class="utr-subtext">
-                        Please enter the 12-digit UPI Transaction Ref. No. from your GPay, PhonePe, or Paytm history to confirm your order immediately.
-                    </div>
-                </div>
-                
-                <button class="btn-orange-submit" id="btn-confirm-upi-payment" onclick="submitUpiPaymentConfirmation()" style="width: 100%; margin-top: 20px; height: 50px; font-size: 1.05rem; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); box-shadow: var(--shadow-md);">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="3" fill="none">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    Verify & Confirm Order
-                </button>
-
-                <!-- Countdown Timer -->
-                <div style="text-align: center; margin-top: 15px; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
-                    Session expires in: <span id="payment-countdown-timer" style="color: #e53e3e; font-weight: 800; font-family: monospace; font-size: 0.9rem;">05:00</span>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>

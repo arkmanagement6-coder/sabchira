@@ -789,14 +789,11 @@ function dbInit() {
     }
     if (!localStorage.getItem('ikko_settings')) {
         localStorage.setItem('ikko_settings', JSON.stringify({
-            upiEnabled: true,
-            upiId: '8888817766@ibl',
-            merchantName: 'RAVI S DHAKRE',
-            sabpaisaEnabled: false,
-            sabpaisaClientCode: 'LUCK1',
-            sabpaisaApiKey: 'sp_A4EHc3rOQmN3L6Zed0q9Cx7CHgnDubPYCC0XnpJlAl0',
-            sabpaisaSecretKey: 'sec_-n8LkEjTI6btD-1u_uuWxYj-HPc20yW0NMAZhPEF49M',
-            sabpaisaMode: 'live'
+            phonepeEnabled: true,
+            phonepeMerchantId: 'M23P2N630SNVS',
+            phonepeClientId: 'SU2605131450590093051231',
+            phonepeClientSecret: 'cab34e32-8fb5-4d6d-94be-7bcccc16c8cb',
+            phonepeMode: 'live'
         }));
     }
 }
@@ -825,8 +822,8 @@ async function loadGlobalSettings() {
                     if (key === 'firebaseEnabled' && globalSettings.firebaseEnabled) {
                         continue;
                     }
-                    // Crucial fix: Do not allow local overrides to turn off SabPaisa if it is enabled globally
-                    if (key === 'sabpaisaEnabled' && globalSettings.sabpaisaEnabled) {
+                    // Crucial fix: Do not allow local overrides to turn off PhonePe if it is enabled globally
+                    if (key === 'phonepeEnabled' && globalSettings.phonepeEnabled) {
                         continue;
                     }
                     mergedSettings[key] = localVal;
@@ -848,31 +845,26 @@ async function loadGlobalSettings() {
                             const finalSettings = { ...mergedSettings, ...firestoreSettings };
                             
                             // Ensure settings.json values always take absolute precedence over database
-                            if (globalSettings.sabpaisaEnabled !== undefined) {
-                                finalSettings.sabpaisaEnabled = globalSettings.sabpaisaEnabled;
+                            if (globalSettings.phonepeEnabled !== undefined) {
+                                finalSettings.phonepeEnabled = globalSettings.phonepeEnabled;
                             }
-                            if (globalSettings.upiId !== undefined) {
-                                finalSettings.upiId = globalSettings.upiId;
-                            }
-                            if (globalSettings.merchantName !== undefined) {
-                                finalSettings.merchantName = globalSettings.merchantName;
-                            }
-                            if (globalSettings.sabpaisaClientCode !== undefined) {
-                                finalSettings.sabpaisaClientCode = globalSettings.sabpaisaClientCode;
-                                finalSettings.sabpaisaApiKey = globalSettings.sabpaisaApiKey;
-                                finalSettings.sabpaisaSecretKey = globalSettings.sabpaisaSecretKey;
-                                finalSettings.sabpaisaMode = globalSettings.sabpaisaMode;
+                            if (globalSettings.phonepeMerchantId !== undefined) {
+                                finalSettings.phonepeMerchantId = globalSettings.phonepeMerchantId;
+                                finalSettings.phonepeClientId = globalSettings.phonepeClientId;
+                                finalSettings.phonepeClientSecret = globalSettings.phonepeClientSecret;
+                                finalSettings.phonepeMode = globalSettings.phonepeMode;
                             }
                             if (globalSettings.firebaseEnabled !== undefined) {
                                 finalSettings.firebaseEnabled = globalSettings.firebaseEnabled;
                             }
                             
-                            // Check if settings.json has been updated with different SabPaisa or UPI credentials
+                            // Check if settings.json has been updated with different PhonePe credentials
                             let needsFirestoreUpdate = false;
-                            if (firestoreSettings.sabpaisaClientCode !== globalSettings.sabpaisaClientCode || 
-                                firestoreSettings.sabpaisaEnabled !== globalSettings.sabpaisaEnabled ||
-                                firestoreSettings.upiId !== globalSettings.upiId ||
-                                firestoreSettings.merchantName !== globalSettings.merchantName) {
+                            if (firestoreSettings.phonepeMerchantId !== globalSettings.phonepeMerchantId || 
+                                firestoreSettings.phonepeEnabled !== globalSettings.phonepeEnabled ||
+                                firestoreSettings.phonepeClientId !== globalSettings.phonepeClientId ||
+                                firestoreSettings.phonepeClientSecret !== globalSettings.phonepeClientSecret ||
+                                firestoreSettings.phonepeMode !== globalSettings.phonepeMode) {
                                 needsFirestoreUpdate = true;
                             }
                             
@@ -906,27 +898,16 @@ function getSettings() {
     let settings = JSON.parse(localStorage.getItem('ikko_settings')) || {};
     
     let changed = false;
-    // Migrate default mock values to the user's requested VPA & merchant details
-    if (!settings.upiId || settings.upiId === 'test@upi' || settings.upiId === 'sabpaisajarvis@nyes' || settings.upiId === 'sabpaisa.lucky06@hdfcbank') {
-        settings.upiId = '8888817766@ibl';
-        changed = true;
-    }
-    if (!settings.merchantName || settings.merchantName === 'IKKO DIGITAL' || settings.merchantName === 'JARVIS AI') {
-        settings.merchantName = 'RAVI S DHAKRE';
-        changed = true;
-    }
-    if (settings.sabpaisaEnabled === undefined || (settings.sabpaisaEnabled && settings.sabpaisaApiKey === 'sp_R89a1KoXYB9MCf6ODyxjcujarerdUWbnyvv11XpH-kc')) {
-        // Disable by default so it falls back to the beautiful Scan & Pay QR
-        settings.sabpaisaEnabled = false;
-        changed = true;
-    }
     
-    // Ensure migration fields exist
-    if (settings.sabpaisaClientCode === undefined) {
-        settings.sabpaisaClientCode = 'LUCK1';
-        settings.sabpaisaApiKey = 'sp_A4EHc3rOQmN3L6Zed0q9Cx7CHgnDubPYCC0XnpJlAl0';
-        settings.sabpaisaSecretKey = 'sec_-n8LkEjTI6btD-1u_uuWxYj-HPc20yW0NMAZhPEF49M';
-        settings.sabpaisaMode = 'live';
+    if (settings.phonepeEnabled === undefined) {
+        settings.phonepeEnabled = true;
+        changed = true;
+    }
+    if (!settings.phonepeMerchantId) {
+        settings.phonepeMerchantId = 'M23P2N630SNVS';
+        settings.phonepeClientId = 'SU2605131450590093051231';
+        settings.phonepeClientSecret = 'cab34e32-8fb5-4d6d-94be-7bcccc16c8cb';
+        settings.phonepeMode = 'live';
         changed = true;
     }
     

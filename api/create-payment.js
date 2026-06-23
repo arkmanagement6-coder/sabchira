@@ -1,11 +1,48 @@
 const https = require('https');
-const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
 
-module.exports = (req, res) => {
-    // Set headers
+// Helper to make HTTPS requests
+function makeRequest(url, method, headers, postData = null) {
+    return new Promise((resolve, reject) => {
+        const urlObj = new URL(url);
+        const options = {
+            hostname: urlObj.hostname,
+            path: urlObj.pathname + urlObj.search,
+            method: method,
+            headers: headers
+        };
+
+        const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+            res.on('end', () => {
+                resolve({
+                    statusCode: res.statusCode,
+                    headers: res.headers,
+                    body: data
+                });
+            });
+        });
+
+        req.on('error', (e) => {
+            reject(e);
+        });
+
+        if (postData) {
+            req.write(postData);
+        }
+        req.end();
+    });
+}
+
+module.exports = async (req, res) => {
+    // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Api-Key');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (req.method === 'OPTIONS') {
         res.statusCode = 200;
@@ -13,134 +50,129 @@ module.exports = (req, res) => {
         return;
     }
 
-    // Read the body (works for both raw Node server and Vercel)
+    // Read request body
     let body = '';
     req.on('data', chunk => {
         body += chunk.toString();
     });
-    req.on('end', () => {
+    
+    req.on('end', async () => {
         try {
-            // Support pre-parsed body (Vercel) or raw parsed JSON
             const data = req.body || JSON.parse(body || '{}');
-            
-            if (data.gateway === 'sabpaisa') {
-                // SabPaisa PG 3.0 Integration
-                const merchantId = data.clientCode;
-                const merchantTxnId = data.client_txn_id;
-                const amountInPaise = Math.round(parseFloat(data.amount) * 100);
-                const currency = 'INR';
-                const timestamp = Math.floor(Date.now() / 1000);
-                
-                // Generate HMAC-SHA256 checksum
-                const checksumInput = `${merchantId}|${merchantTxnId}|${amountInPaise}|${currency}|${timestamp}`;
-                const checksum = crypto.createHmac('sha256', data.secretKey)
-                                       .update(checksumInput)
-                                       .digest('hex')
-                                       .toLowerCase();
-                
-                const payload = JSON.stringify({
-                    merchantId: merchantId,
-                    merchantTxnId: merchantTxnId,
-                    amount: amountInPaise,
-                    currency: currency,
-                    returnUrl: data.redirect_url,
-                    customerName: data.customer_name,
-                    customerEmail: data.customer_email || 'customer@ikkodigital.com',
-                    customerPhone: data.customer_mobile,
-                    description: `Order ${merchantTxnId}`,
-                    timestamp: timestamp,
-                    checksum: checksum
-                });
-                
-                const isLive = data.mode === 'live';
-                const hostname = isLive ? 'merchant-api.sabpaisa.in' : 'staging-sb-merchant-api.sabpaisa.in';
-                const path = '/api/v2/payments';
-                
-                const options = {
-                    hostname: hostname,
-                    path: path,
-                    method: 'POST',
-                    headers: {
-                        'X-Api-Key': data.apiKey,
-                        'Content-Type': 'application/json',
-                        'Content-Length': Buffer.byteLength(payload)
-                    }
-                };
-                
-                console.log(`[SabPaisa Request] Host: ${hostname}, MID: ${merchantId}, TxnId: ${merchantTxnId}, Payload: ${payload}`);
-                
-                const apiReq = https.request(options, (apiRes) => {
-                    let apiData = '';
-                    apiRes.on('data', (chunk) => {
-                        apiData += chunk;
-                    });
-                    apiRes.on('end', () => {
-                        console.log(`[SabPaisa Response] Status: ${apiRes.statusCode}, Body: ${apiData}`);
-                        res.statusCode = apiRes.statusCode;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.end(apiData);
-                    });
-                });
-                
-                apiReq.on('error', (e) => {
-                    console.error('SabPaisa Request Error:', e);
-                    res.statusCode = 500;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.end(JSON.stringify({ success: false, message: 'Internal SabPaisa Communication Error: ' + e.message }));
-                });
-                
-                apiReq.write(payload);
-                apiReq.end();
-                
-            } else {
-                // Legacy UPIGateway Proxy Flow
-                const payload = JSON.stringify({
-                    key: data.key,
-                    client_txn_id: data.client_txn_id,
-                    amount: data.amount,
-                    p_info: data.p_info || 'IKKO DIGITAL Order',
-                    customer_name: data.customer_name,
-                    customer_email: data.customer_email || 'customer@ikkodigital.com',
-                    customer_mobile: data.customer_mobile,
-                    redirect_url: data.redirect_url
-                });
+            const orderId = data.orderId;
+            const amount = data.amount;
+            const redirectUrl = data.redirectUrl;
 
-                const options = {
-                    hostname: 'merchant.upigateway.com',
-                    path: '/api/create_order',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Content-Length': Buffer.byteLength(payload)
-                    }
-                };
-
-                const apiReq = https.request(options, (apiRes) => {
-                    let apiData = '';
-                    apiRes.on('data', (chunk) => {
-                        apiData += chunk;
-                    });
-                    apiRes.on('end', () => {
-                        res.statusCode = apiRes.statusCode;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.end(apiData);
-                    });
-                });
-
-                apiReq.on('error', (e) => {
-                    console.error('UPIGateway Request Error:', e);
-                    res.statusCode = 500;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.end(JSON.stringify({ status: false, msg: 'Internal Gateway Communication Error: ' + e.message }));
-                });
-
-                apiReq.write(payload);
-                apiReq.end();
+            if (!orderId || !amount || !redirectUrl) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ success: false, message: 'Missing required parameters: orderId, amount, redirectUrl' }));
+                return;
             }
+
+            // Read settings from settings.json
+            let settings = {};
+            try {
+                const settingsPath = path.join(process.cwd(), 'settings.json');
+                if (fs.existsSync(settingsPath)) {
+                    settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+                }
+            } catch (err) {
+                console.error('Error reading settings.json:', err);
+            }
+
+            // Fallbacks to default credentials provided by user
+            const merchantId = settings.phonepeMerchantId || 'M23P2N630SNVS';
+            const clientId = settings.phonepeClientId || 'SU2605131450590093051231';
+            const clientSecret = settings.phonepeClientSecret || 'cab34e32-8fb5-4d6d-94be-7bcccc16c8cb';
+            const isLive = settings.phonepeMode === 'live';
+
+            // PhonePe API endpoints
+            const tokenUrl = isLive 
+                ? 'https://api.phonepe.com/apis/identity-manager/v1/oauth/token'
+                : 'https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token';
+
+            const payUrl = isLive
+                ? 'https://api.phonepe.com/apis/pg/checkout/v2/pay'
+                : 'https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/pay';
+
+            // Step 1: Request Access Token
+            const tokenParams = new URLSearchParams();
+            tokenParams.append('client_id', clientId);
+            tokenParams.append('client_version', '1');
+            tokenParams.append('client_secret', clientSecret);
+            tokenParams.append('grant_type', 'client_credentials');
+
+            console.log(`[PhonePe] Requesting token from: ${tokenUrl}`);
+            const tokenRes = await makeRequest(
+                tokenUrl,
+                'POST',
+                { 'Content-Type': 'application/x-www-form-urlencoded' },
+                tokenParams.toString()
+            );
+
+            if (tokenRes.statusCode !== 200) {
+                console.error('[PhonePe] Token Error Response:', tokenRes.body);
+                res.statusCode = tokenRes.statusCode;
+                res.end(JSON.stringify({ success: false, message: 'Failed to retrieve access token from PhonePe', details: tokenRes.body }));
+                return;
+            }
+
+            const tokenData = JSON.parse(tokenRes.body);
+            const accessToken = tokenData.access_token;
+            if (!accessToken) {
+                res.statusCode = 500;
+                res.end(JSON.stringify({ success: false, message: 'Access token not found in PhonePe response' }));
+                return;
+            }
+
+            // Step 2: Create Payment Session
+            const amountInPaise = Math.round(parseFloat(amount) * 100);
+            const payPayload = JSON.stringify({
+                merchantOrderId: orderId,
+                amount: amountInPaise,
+                expireAfter: 900, // 15 mins
+                paymentFlow: {
+                    type: 'PG_CHECKOUT',
+                    merchantUrls: {
+                        redirectUrl: redirectUrl,
+                        redirectMode: 'REDIRECT'
+                    }
+                }
+            });
+
+            console.log(`[PhonePe] Initiating checkout pay request to: ${payUrl}`);
+            const payRes = await makeRequest(
+                payUrl,
+                'POST',
+                {
+                    'Content-Type': 'application/json',
+                    'Authorization': `O-Bearer ${accessToken}`,
+                    'X-Merchant-Id': merchantId
+                },
+                payPayload
+            );
+
+            if (payRes.statusCode !== 200) {
+                console.error('[PhonePe] Pay Error Response:', payRes.body);
+                res.statusCode = payRes.statusCode;
+                res.end(JSON.stringify({ success: false, message: 'Failed to initiate payment with PhonePe', details: payRes.body }));
+                return;
+            }
+
+            const payData = JSON.parse(payRes.body);
+            if (payData && payData.redirectUrl) {
+                console.log(`[PhonePe] Payment session created successfully. Redirect URL: ${payData.redirectUrl}`);
+                res.statusCode = 200;
+                res.end(JSON.stringify({ success: true, redirectUrl: payData.redirectUrl }));
+            } else {
+                res.statusCode = 500;
+                res.end(JSON.stringify({ success: false, message: 'No redirect URL returned by PhonePe', response: payData }));
+            }
+
         } catch (err) {
-            res.statusCode = 400;
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ status: false, msg: 'Invalid request payload: ' + err.message }));
+            console.error('[PhonePe] Internal server error:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ success: false, message: 'Internal server error: ' + err.message }));
         }
     });
 };

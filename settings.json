@@ -1,12 +1,9 @@
 {
-  "sabpaisaEnabled": false,
-  "sabpaisaClientCode": "LUCK1",
-  "sabpaisaApiKey": "sp_A4EHc3rOQmN3L6Zed0q9Cx7CHgnDubPYCC0XnpJlAl0",
-  "sabpaisaSecretKey": "sec_-n8LkEjTI6btD-1u_uuWxYj-HPc20yW0NMAZhPEF49M",
-  "sabpaisaMode": "live",
-  "upiEnabled": true,
-  "upiId": "8888817766@ibl",
-  "merchantName": "RAVI S DHAKRE",
+  "phonepeEnabled": true,
+  "phonepeMerchantId": "M23P2N630SNVS",
+  "phonepeClientId": "SU2605131450590093051231",
+  "phonepeClientSecret": "cab34e32-8fb5-4d6d-94be-7bcccc16c8cb",
+  "phonepeMode": "live",
   "firebaseEnabled": true,
   "firebaseConfig": {
     "apiKey": "AIzaSyBEA_951CCrsfl8JHkayubYjv3rTaDcsEI",
