@@ -262,6 +262,7 @@
     <script>
         let selectedPaymentMethod = ''; // 'phonepe', 'paytm', or 'scanpay'
         let currentWizardStep = 1;
+        let currentOrderId = '';
 
         // Form wizard navigation
         function showWizardStep(step) {
@@ -475,9 +476,7 @@
             const payeeName = settings.merchantName || 'RAVI S DHAKRE';
             
             document.getElementById('modal-payment-amount').innerText = `Rs. ${total.toFixed(2)}`;
-            document.getElementById('modal-payee-name').innerText = payeeName;
-            document.getElementById('modal-upi-id').innerText = payeeUpi;
-            document.getElementById('modal-order-id').innerText = orderId;
+            currentOrderId = orderId;
             
             // Build deep link for mobile apps
             const deepLink = `upi://pay?pa=${payeeUpi}&pn=${encodeURIComponent(payeeName)}&am=${total.toFixed(2)}&cu=INR&tn=Order_${orderId}`;
@@ -568,7 +567,7 @@
                 return;
             }
             
-            const orderId = document.getElementById('modal-order-id').innerText;
+            const orderId = currentOrderId;
             const orders = getOrders();
             const orderIndex = orders.findIndex(o => o.id === orderId);
             
@@ -617,21 +616,6 @@
                     <canvas id="upi-qr-canvas" style="display: block; margin: 0 auto;"></canvas>
                 </div>
 
-                <!-- Payee Details -->
-                <div style="background-color: #f7fafc; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem;">
-                        <span style="color: var(--text-muted); font-weight: 600;">Payee Name:</span>
-                        <span style="color: var(--primary); font-weight: 800;" id="modal-payee-name">RAVI S DHAKRE</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem;">
-                        <span style="color: var(--text-muted); font-weight: 600;">UPI ID:</span>
-                        <span style="color: var(--primary); font-weight: 800; font-family: monospace;" id="modal-upi-id">8888817766@ibl</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-                        <span style="color: var(--text-muted); font-weight: 600;">Order ID:</span>
-                        <span style="color: var(--primary); font-weight: 800;" id="modal-order-id">-</span>
-                    </div>
-                </div>
 
                 <!-- Deep Link Button for Mobile Users -->
                 <div class="mobile-only-pay-btn-wrap" style="text-align: center; margin-bottom: 20px; display: none;">
