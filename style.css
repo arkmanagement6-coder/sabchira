@@ -2304,14 +2304,17 @@ button, input, select, textarea {
     gap: 18px;
 }
 .app-logo {
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
+    width: 68px;
+    height: 36px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 4px 8px;
 }
 .app-logo.purple-bg {
     background-color: #5f259f;
