@@ -258,6 +258,7 @@
 
     <!-- Core Scripts -->
     <script src="app-core.js?v=11.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script>
         let selectedPaymentMethod = ''; // 'phonepe', 'paytm', or 'scanpay'
         let currentWizardStep = 1;
@@ -489,6 +490,18 @@
                 document.querySelector('.mobile-only-pay-btn-wrap').style.display = 'none';
             }
             
+            // Generate dynamic UPI QR Code
+            try {
+                new QRious({
+                    element: document.getElementById('upi-qr-canvas'),
+                    value: deepLink,
+                    size: 200,
+                    level: 'H'
+                });
+            } catch (err) {
+                console.error("Error rendering UPI QR code:", err);
+            }
+
             // Show modal and start session countdown
             document.getElementById('upi-payment-modal-overlay').style.display = 'flex';
             document.getElementById('payment-utr-input').value = ''; // Reset input
@@ -601,7 +614,7 @@
                 
                 <!-- Display QR Code -->
                 <div class="vmodal-qr-frame">
-                    <img src="Image/phonepe_qr.png" alt="PhonePe UPI QR Code">
+                    <canvas id="upi-qr-canvas" style="display: block; margin: 0 auto;"></canvas>
                 </div>
 
                 <!-- Payee Details -->
