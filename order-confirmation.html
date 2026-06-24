@@ -351,11 +351,25 @@
                     const checkRes = await fetch(`/api/check-status?orderId=${orderId}`);
                     if (checkRes.ok) {
                         const statusData = await checkRes.json();
-                        if (statusData && statusData.success) {
-                            const pgStatus = statusData.data.status;
-                            if (pgStatus === 'SUCCESS') {
+                        if (statusData) {
+                            // PhonePe Checkout Status API returns state (COMPLETED, FAILED, PENDING)
+                            // Standard PG Status API might return code/status/success
+                            const state = (statusData.state || statusData.status || statusData.code || '').toUpperCase();
+                            console.log(`[PhonePe Status] Parsed state: ${state} for order ${orderId}`);
+                            
+                            if (state === 'COMPLETED' || state === 'SUCCESS' || state === 'PAYMENT_SUCCESS') {
                                 order.status = 'pending';
-                                order.utr = statusData.data.providerReferenceId || 'PhonePe Verified';
+                                
+                                // Extract UTR/Transaction ID securely
+                                let utrVal = 'PhonePe Verified';
+                                if (statusData.paymentDetails && statusData.paymentDetails.length > 0) {
+                                    utrVal = statusData.paymentDetails[0].pgTransactionId || statusData.paymentDetails[0].providerReferenceId || utrVal;
+                                } else if (statusData.data) {
+                                    utrVal = statusData.data.providerReferenceId || statusData.data.transactionId || utrVal;
+                                } else if (statusData.providerReferenceId) {
+                                    utrVal = statusData.providerReferenceId;
+                                }
+                                order.utr = utrVal;
                                 
                                 if (typeof clearCart === 'function') {
                                     clearCart();
@@ -365,7 +379,7 @@
                                 localStorage.setItem('ikko_orders', JSON.stringify(orders));
                                 renderSuccessUI(order);
                                 return;
-                            } else if (pgStatus === 'FAILED') {
+                            } else if (state === 'FAILED' || state === 'PAYMENT_ERROR' || state === 'PAYMENT_DECLINED' || state === 'CANCELED' || state === 'CANCELLED') {
                                 order.status = 'cancelled';
                                 order.utr = 'Payment Failed';
                                 
