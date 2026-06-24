@@ -35,40 +35,6 @@
             fbq('track', 'InitiateCheckout');
         }
         
-        // Track Purchase Page (Purchase)
-        if (path.includes('order-confirmation.html') || path.endsWith('/order-confirmation') || path.includes('/order-confirmation?')) {
-            const urlParams = new URLSearchParams(window.location.search);
-            let orderId = urlParams.get('orderId') || urlParams.get('client_txn_id') || urlParams.get('merchant_txn_id');
-            let status = urlParams.get('status');
-            if (status) status = status.toLowerCase();
-            
-            const orders = JSON.parse(localStorage.getItem('ikko_orders')) || [];
-            let order = null;
-            if (orderId) {
-                order = orders.find(o => o.id === orderId);
-            } else if (orders.length > 0) {
-                order = orders[orders.length - 1];
-            }
-            
-            const isSuccess = (status === 'success' || status === 'successful') || 
-                               (order && order.status !== 'cancelled' && order.utr !== 'Payment Failed');
-            
-            if (order && isSuccess) {
-                let totalVal = 999;
-                if (order.total) {
-                    const cleaned = String(order.total).replace(/[^\d.]/g, '');
-                    const parsed = parseFloat(cleaned);
-                    if (!isNaN(parsed)) totalVal = parsed;
-                }
-                fbq('track', 'Purchase', {
-                    value: totalVal,
-                    currency: 'INR',
-                    content_type: 'product',
-                    content_ids: order.items.map(item => String(item.id))
-                });
-            }
-        }
-        
         // Track Product Page (ViewContent)
         if (path.includes('product.html') || path.endsWith('/product') || path.includes('/product?')) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -99,6 +65,45 @@
         runTracking();
     }
 })();
+
+// Expose global helper to track purchase event dynamically on demand
+window.trackPurchaseEvent = function(order) {
+    if (!order) return;
+    
+    // Check if pixel was already fired to avoid double tracking on refreshes
+    if (order.pixelFired) {
+        console.log(`[Pixel] Purchase event already fired for order ${order.id}. Skipping.`);
+        return;
+    }
+
+    if (typeof fbq === 'function') {
+        let totalVal = 999;
+        if (order.total) {
+            const cleaned = String(order.total).replace(/[^\d.]/g, '');
+            const parsed = parseFloat(cleaned);
+            if (!isNaN(parsed)) totalVal = parsed;
+        }
+        
+        console.log(`[Pixel] Firing Purchase event for order ${order.id} with value Rs. ${totalVal}`);
+        fbq('track', 'Purchase', {
+            value: totalVal,
+            currency: 'INR',
+            content_type: 'product',
+            content_ids: order.items.map(item => String(item.id))
+        });
+        
+        // Mark order as tracked in localStorage
+        order.pixelFired = true;
+        const orders = JSON.parse(localStorage.getItem('ikko_orders')) || [];
+        const idx = orders.findIndex(o => o.id === order.id);
+        if (idx !== -1) {
+            orders[idx] = order;
+            localStorage.setItem('ikko_orders', JSON.stringify(orders));
+        }
+    } else {
+        console.warn('[Pixel] fbq function not found. Could not track Purchase.');
+    }
+};
 
 const INITIAL_PRODUCTS = [
   {
